@@ -129,13 +129,6 @@ class App extends Component {
     this.setState({ term: e.target.value })
   }
 
-  searchingFor(term) {
-    return this.state.description.toLowerCase().indexOf(term.toLowerCase()) !== -1;
-    // return function(x) {
-    //   return x.first.toLowerCase().includes(term.toLowerCase()) || !term;
-    // }
-  }
-
   render() {
     const { datas, term } = this.state;
     return (
