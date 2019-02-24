@@ -143,7 +143,7 @@ class App extends Component {
             <ProductList
               key={i}
               id={data.id}
-              description={data.description}
+              short_description={data.short_description}
               status={data.status}
               showProduct={this.showProduct}
               removeProduct={this.removeProduct}

@@ -1,0 +1,22 @@
+.productList {
+    width: 100%;
+    background-color: #dfe6e9;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 5px;
+}
+
+.productListButton {
+    display: inline-block;
+    height: auto;
+    width: auto;
+    border-radius: 7px;
+    margin: 3px 5px;
+    color: #FFF;
+    padding: 14px 20px;
+    cursor: pointer;
+}
+
+.productListButton:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
