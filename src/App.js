@@ -8,8 +8,8 @@ class App extends Component {
     super(props);
     this.state = {
       title: 'CRUD de Produtos dati.',
-      action: 'create',
       editing: false,
+      idEditing: '',
       button: 'Salvar',
       datas: []
     };
@@ -25,8 +25,8 @@ class App extends Component {
   }
 
   async searchAll() {
-    const datas = await axios.get('http://18.228.14.48/api/products?cmd=list');
-    this.setState({ datas: datas.data });
+    const products = await axios.get('http://18.228.14.48/api/products?cmd=list');
+    this.setState({ datas: products.data });
   }
 
   createOrUpdateProduct = (e) => {
@@ -47,15 +47,34 @@ class App extends Component {
         this.refreshContent();
       });
     } else {
-      axios.put(`http://18.228.14.48/api/products/${this.state.editing}`, product)
+      axios.put(`http://18.228.14.48/api/products/${this.state.idEditing}`, product)
       .then(res => {
         this.refreshContent();
+
+        this.setState({
+          editing: false,
+          idEditing: '',
+          button: 'Salvar'
+        });
       });
     }
   }
 
-  showProduct = (id) => {
-    console.log("Mostrando Produto" + id);
+  async showProduct (id) {
+    let product = await axios.get(`http://18.228.14.48/api/products?cmd=details&id=${id}`)
+      .then(res => {
+        this.refs.description.value = res.data.description;
+        this.refs.short_description.value = res.data.short_description;
+        this.refs.code.value = res.data.code;
+        this.refs.status.value = res.data.status;
+        this.refs.value.value = res.data.value;
+        this.refs.qty.value = res.data.qty;
+
+        this.setState({
+          editing: null
+        });
+
+      });
   }
 
   removeProduct = (id) => {
@@ -71,38 +90,47 @@ class App extends Component {
     this.refs.description.focus();
   }
 
-  editProduct = (id) => {
-    this.setState({
-      editing: true,
-      button: 'Editar'
-    });
+  async editProduct (id) {
 
-    console.log(this.props.children);
+    let product = await axios.get(`http://18.228.14.48/api/products?cmd=details&id=${id}`)
+      .then(res => {
+        this.refs.description.value = res.data.description;
+        this.refs.short_description.value = res.data.short_description;
+        this.refs.code.value = res.data.code;
+        this.refs.status.value = res.data.status;
+        this.refs.value.value = res.data.value;
+        this.refs.qty.value = res.data.qty;
 
-    this.refs.description.value = 'teste';
+        this.setState({
+          editing: true,
+          idEditing: res.data.id,
+          button: 'Editar'
+        });
 
+      });
   }
 
-  isDisabled = () => {
-    
+  isDisabled () {
+    return 'false';
   }
 
   render() {
     let datas = this.state.datas;
+    let editing = this.isDisabled();
     return (
       <div className="App">
         <h2>{this.state.title}</h2>
         <form ref="formProduct" className="formProduct">
-          <textarea type="text" ref="description" placeholder="Descrição do Produto" className="formFieldProduct" />
-          <input type="text" ref="short_description" placeholder="Breve Descrição" className="formFieldProduct" />
-          <input type="text" ref="code" placeholder="Código" className="formFieldProduct" />
-          <select ref="status" className="formFieldProduct" >
+          <textarea type="text" ref="description" placeholder="Descrição do Produto" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
+          <input type="text" ref="short_description" placeholder="Breve Descrição" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
+          <input type="text" ref="code" placeholder="Código" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
+          <select ref="status" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} >
             <option value="enable">Enable</option>
             <option value="disable">Disable</option>
           </select>
-          <input type="number" step="0.01" ref="value" placeholder="value" className="formFieldProduct" />
-          <input type="number" ref="qty" placeholder="Quantidade" className="formFieldProduct" />
-          <button onClick={this.createOrUpdateProduct} className="formProductSubmit">{this.state.button}</button>
+          <input type="number" step="0.01" ref="value" placeholder="value" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
+          <input type="number" ref="qty" placeholder="Quantidade" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
+          <button onClick={this.createOrUpdateProduct} className="formProductSubmit" disabled={this.state.editing == null ? 'disabled' : ''} >{this.state.button}</button>
         </form>
 
         <pre>
