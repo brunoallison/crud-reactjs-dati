@@ -27,7 +27,9 @@ class App extends Component {
 
   async searchAll() {
     const products = await axios.get('http://18.228.14.48/api/products?cmd=list');
-    this.setState({ datas: products.data });
+    this.setState({
+      datas: products.data
+    });
   }
 
   createOrUpdateProduct(e) {
@@ -44,20 +46,20 @@ class App extends Component {
 
     if (!this.state.editing) {
       axios.post('http://18.228.14.48/api/products/', product)
-      .then(res => {
-        this.refreshContent();
-      });
+        .then(res => {
+          this.refreshContent();
+        });
     } else {
       axios.put(`http://18.228.14.48/api/products/${this.state.idEditing}`, product)
-      .then(res => {
-        this.refreshContent();
+        .then(res => {
+          this.refreshContent();
 
-        this.setState({
-          editing: false,
-          idEditing: '',
-          button: 'Salvar'
+          this.setState({
+            editing: false,
+            idEditing: '',
+            button: 'Salvar'
+          });
         });
-      });
     }
   }
 
@@ -112,7 +114,9 @@ class App extends Component {
 
   changeStatus(id, currentStatus) {
     const status = currentStatus == 'enable' ? 'disable' : 'enable';
-    let product = { status };
+    let product = {
+      status
+    };
     axios.put(`http://18.228.14.48/api/products/${id}`, product)
       .then(res => {
         this.refreshContent();

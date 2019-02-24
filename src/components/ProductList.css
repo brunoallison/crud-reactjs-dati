@@ -1,9 +1,13 @@
 .productList {
     width: 100%;
-    background-color: #dfe6e9;
-    border-radius: 5px;
     padding: 20px;
     margin-top: 5px;
+    -webkit-transition: -webkit-box-shadow .25s;
+    transition: -webkit-box-shadow .25s;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+    -moz-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
 }
 
 .productListButton {
@@ -15,6 +19,25 @@
     color: #FFF;
     padding: 14px 20px;
     cursor: pointer;
+}
+
+.productListButtonShow {
+    background-color: #007bff;
+}
+.productListButtonRemove {
+    background-color: #dc3545;
+}
+
+.productListButtonEdit {
+    background-color: #ffc107;
+}
+
+.productListButtonEnable {
+    background-color: #28a745;
+}
+
+.productListButtonDisable {
+    background-color: #dc3545;
 }
 
 .productListButton:hover {
