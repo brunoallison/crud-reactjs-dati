@@ -8,6 +8,7 @@ class App extends Component {
     super(props);
     this.state = {
       title: 'CRUD de Produtos dati.',
+      term: '',
       editing: false,
       idEditing: '',
       button: 'Salvar',
@@ -18,6 +19,7 @@ class App extends Component {
     this.removeProduct = this.removeProduct.bind(this);
     this.editProduct = this.editProduct.bind(this);
     this.changeStatus = this.changeStatus.bind(this);
+    this.searchHandler = this.searchHandler.bind(this);
   }
 
   async componentDidMount() {
@@ -123,8 +125,19 @@ class App extends Component {
       });
   }
 
+  searchHandler(e) {
+    this.setState({ term: e.target.value })
+  }
+
+  searchingFor(term) {
+    return this.state.description.toLowerCase().indexOf(term.toLowerCase()) !== -1;
+    // return function(x) {
+    //   return x.first.toLowerCase().includes(term.toLowerCase()) || !term;
+    // }
+  }
+
   render() {
-    let datas = this.state.datas;
+    const { datas, term } = this.state;
     return (
       <div className="App">
         <h2>{this.state.title}</h2>
@@ -142,19 +155,30 @@ class App extends Component {
           <button onClick={this.createOrUpdateProduct} className="formProductSubmit" disabled={this.state.editing == null ? 'disabled' : ''} >{this.state.button}</button>
         </form>
 
+        <form ref="searchProduct" className="formProduct">
+          <input type="text" ref="term" placeholder="Buscar" className="formFieldProduct" onChange={this.searchHandler} />
+        </form>
+
         <pre>
-          {datas.map((data, i) => 
-            <ProductList
-              key={i}
-              id={data.id}
-              short_description={data.short_description}
-              status={data.status}
-              showProduct={this.showProduct}
-              removeProduct={this.removeProduct}
-              editProduct={this.editProduct}
-              changeStatus={this.changeStatus}
-            />
-          )}
+          { 
+            datas.filter(
+              data => {
+                return data.short_description.toLowerCase().indexOf(term.toLowerCase()) >= 0
+              }
+            )
+            .map( data => 
+              <ProductList
+                key={data.id}
+                id={data.id}
+                short_description={data.short_description}
+                status={data.status}
+                showProduct={this.showProduct}
+                removeProduct={this.removeProduct}
+                editProduct={this.editProduct}
+                changeStatus={this.changeStatus}
+              />
+            )
+          }
         </pre>
       </div>
     );
