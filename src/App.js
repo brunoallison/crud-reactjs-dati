@@ -29,7 +29,7 @@ class App extends Component {
     this.setState({ datas: products.data });
   }
 
-  createOrUpdateProduct = (e) => {
+  createOrUpdateProduct(e) {
     e.preventDefault();
 
     let product = {
@@ -60,7 +60,7 @@ class App extends Component {
     }
   }
 
-  async showProduct (id) {
+  async showProduct(id) {
     let product = await axios.get(`http://18.228.14.48/api/products?cmd=details&id=${id}`)
       .then(res => {
         this.refs.description.value = res.data.description;
@@ -77,21 +77,20 @@ class App extends Component {
       });
   }
 
-  removeProduct = (id) => {
+  removeProduct(id) {
     axios.delete(`http://18.228.14.48/api/products/${id}`)
       .then(res => {
         this.refreshContent();
       });
   }
 
-  refreshContent = () => {
+  refreshContent() {
     this.searchAll();
     this.refs.formProduct.reset();
     this.refs.description.focus();
   }
 
-  async editProduct (id) {
-
+  async editProduct(id) {
     let product = await axios.get(`http://18.228.14.48/api/products?cmd=details&id=${id}`)
       .then(res => {
         this.refs.description.value = res.data.description;
@@ -110,13 +109,8 @@ class App extends Component {
       });
   }
 
-  isDisabled () {
-    return 'false';
-  }
-
   render() {
     let datas = this.state.datas;
-    let editing = this.isDisabled();
     return (
       <div className="App">
         <h2>{this.state.title}</h2>
