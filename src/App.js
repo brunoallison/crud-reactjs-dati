@@ -8,8 +8,9 @@ class App extends Component {
     super(props);
     this.state = {
       title: 'CRUD de Produtos dati.',
-      act: 0,
-      index: '',
+      action: 'create',
+      editing: false,
+      button: 'Salvar',
       datas: []
     };
 
@@ -20,17 +21,37 @@ class App extends Component {
 
   async componentDidMount() {
     this.refs.description.focus();
-
     await this.searchAll();
   }
 
   async searchAll() {
     const datas = await axios.get('http://18.228.14.48/api/products?cmd=list');
-
     this.setState({ datas: datas.data });
   }
 
-  createProduct = (e) => {
+  createOrUpdateProduct = (e) => {
+    e.preventDefault();
+
+    let product = {
+      description: this.refs.description.value,
+      short_description: this.refs.short_description.value,
+      code: this.refs.code.value,
+      status: this.refs.status.value,
+      value: this.refs.value.value,
+      qty: this.refs.qty.value
+    };
+
+    if (!this.state.editing) {
+      axios.post('http://18.228.14.48/api/products/', product)
+      .then(res => {
+        this.refreshContent();
+      });
+    } else {
+      axios.put(`http://18.228.14.48/api/products/${this.state.editing}`, product)
+      .then(res => {
+        this.refreshContent();
+      });
+    }
   }
 
   showProduct = (id) => {
@@ -40,14 +61,30 @@ class App extends Component {
   removeProduct = (id) => {
     axios.delete(`http://18.228.14.48/api/products/${id}`)
       .then(res => {
-        this.searchAll();
-        this.refs.formProduct.reset();
-        this.refs.description.focus();
+        this.refreshContent();
       });
   }
 
+  refreshContent = () => {
+    this.searchAll();
+    this.refs.formProduct.reset();
+    this.refs.description.focus();
+  }
+
   editProduct = (id) => {
-    console.log("Editando Produto" + id);
+    this.setState({
+      editing: true,
+      button: 'Editar'
+    });
+
+    console.log(this.props.children);
+
+    this.refs.description.value = 'teste';
+
+  }
+
+  isDisabled = () => {
+    
   }
 
   render() {
@@ -59,10 +96,13 @@ class App extends Component {
           <textarea type="text" ref="description" placeholder="Descrição do Produto" className="formFieldProduct" />
           <input type="text" ref="short_description" placeholder="Breve Descrição" className="formFieldProduct" />
           <input type="text" ref="code" placeholder="Código" className="formFieldProduct" />
-          <input type="text" ref="status" placeholder="Status" className="formFieldProduct" />
+          <select ref="status" className="formFieldProduct" >
+            <option value="enable">Enable</option>
+            <option value="disable">Disable</option>
+          </select>
           <input type="number" step="0.01" ref="value" placeholder="value" className="formFieldProduct" />
           <input type="number" ref="qty" placeholder="Quantidade" className="formFieldProduct" />
-          <button onClick={this.createProduct} className="formProductSubmit">Salvar</button>
+          <button onClick={this.createOrUpdateProduct} className="formProductSubmit">{this.state.button}</button>
         </form>
 
         <pre>
