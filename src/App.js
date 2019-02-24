@@ -17,6 +17,7 @@ class App extends Component {
     this.showProduct = this.showProduct.bind(this);
     this.removeProduct = this.removeProduct.bind(this);
     this.editProduct = this.editProduct.bind(this);
+    this.changeStatus = this.changeStatus.bind(this);
   }
 
   async componentDidMount() {
@@ -109,6 +110,15 @@ class App extends Component {
       });
   }
 
+  changeStatus(id, currentStatus) {
+    const status = currentStatus == 'enable' ? 'disable' : 'enable';
+    let product = { status };
+    axios.put(`http://18.228.14.48/api/products/${id}`, product)
+      .then(res => {
+        this.refreshContent();
+      });
+  }
+
   render() {
     let datas = this.state.datas;
     return (
@@ -122,9 +132,9 @@ class App extends Component {
             <option value="enable">Enable</option>
             <option value="disable">Disable</option>
           </select>
-          <input type="number" step="0.01" ref="value" placeholder="value" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
+          <input type="number" step="0.01" ref="value" placeholder="Valor" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
           <input type="number" ref="qty" placeholder="Quantidade" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
-          <button onClick={this.createOrUpdateProduct} className="formProductSubmit" disabled={this.state.editing == null ? 'disabled' : ''} >{this.state.button}</button>
+          <button onClick={this.createOrUpdateProduct} className="foo-button mdc-button" disabled={this.state.editing == null ? 'disabled' : ''} >{this.state.button}</button>
         </form>
 
         <pre>
@@ -137,6 +147,7 @@ class App extends Component {
               showProduct={this.showProduct}
               removeProduct={this.removeProduct}
               editProduct={this.editProduct}
+              changeStatus={this.changeStatus}
             />
           )}
         </pre>
