@@ -129,12 +129,13 @@ class App extends Component {
           <input type="text" ref="short_description" placeholder="Breve Descrição" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
           <input type="text" ref="code" placeholder="Código" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
           <select ref="status" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} >
-            <option value="enable">Enable</option>
-            <option value="disable">Disable</option>
+            <option>Status do Produto</option>
+            <option value="enable">Ativado</option>
+            <option value="disable">Desativado</option>
           </select>
           <input type="number" step="0.01" ref="value" placeholder="Valor" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
           <input type="number" ref="qty" placeholder="Quantidade" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
-          <button onClick={this.createOrUpdateProduct} className="foo-button mdc-button" disabled={this.state.editing == null ? 'disabled' : ''} >{this.state.button}</button>
+          <button onClick={this.createOrUpdateProduct} className="formProductSubmit" disabled={this.state.editing == null ? 'disabled' : ''} >{this.state.button}</button>
         </form>
 
         <pre>
