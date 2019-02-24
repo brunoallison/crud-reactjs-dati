@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ProductList from './components/ProductList';
 import axios from 'axios';
 import './App.css';
 
@@ -11,40 +12,25 @@ class App extends Component {
       index: '',
       datas: []
     };
+
+    this.showProduct = this.showProduct.bind(this);
+    this.removeProduct = this.removeProduct.bind(this);
+    this.editProduct = this.editProduct.bind(this);
   }
 
   async componentDidMount() {
     this.refs.description.focus();
 
     await this.searchAll();
-
-    console.log(this.state.datas);
   }
 
   async searchAll() {
-    const teste = await axios.get('http://18.228.14.48/api/products?cmd=list');
+    const datas = await axios.get('http://18.228.14.48/api/products?cmd=list');
 
-    this.setState({ datas: teste.data });
+    this.setState({ datas: datas.data });
   }
 
   createProduct = (e) => {
-    e.preventDefault();
-
-    console.log('try');
-
-    let datas = this.state.datas;
-    let description = this.refs.description.nodeValue;
-    let short_description = this.refs.short_description.nodeValue;
-    let code = this.refs.code.nodeValue;
-    let status = this.refs.status.nodeValue;
-    let qty = this.refs.qty.nodeValue;
-
-    let data = {
-      description, short_description, code, status, qty
-    }
-
-    datas.push(data);
-
   }
 
   showProduct = (id) => {
@@ -54,8 +40,9 @@ class App extends Component {
   removeProduct = (id) => {
     axios.delete(`http://18.228.14.48/api/products/${id}`)
       .then(res => {
-        console.log(res);
-        console.log(res.data);
+        this.searchAll();
+        this.refs.formProduct.reset();
+        this.refs.description.focus();
       });
   }
 
@@ -73,18 +60,22 @@ class App extends Component {
           <input type="text" ref="short_description" placeholder="Breve Descrição" className="formFieldProduct" />
           <input type="text" ref="code" placeholder="Código" className="formFieldProduct" />
           <input type="text" ref="status" placeholder="Status" className="formFieldProduct" />
+          <input type="number" step="0.01" ref="value" placeholder="value" className="formFieldProduct" />
           <input type="number" ref="qty" placeholder="Quantidade" className="formFieldProduct" />
           <button onClick={this.createProduct} className="formProductSubmit">Salvar</button>
         </form>
 
         <pre>
           {datas.map((data, i) => 
-            <li key={i} className="productList">
-              {data.id}. {data.description}, {data.status}
-              <button onClick={() => this.showProduct(data.id)} className="productListButton">Ver</button>
-              <button onClick={() => this.removeProduct(data.id)} className="productListButton">Remover</button>
-              <button onClick={() => this.editProduct(data.id)} className="productListButton">Editar</button>
-            </li>  
+            <ProductList
+              key={i}
+              id={data.id}
+              description={data.description}
+              status={data.status}
+              showProduct={this.showProduct}
+              removeProduct={this.removeProduct}
+              editProduct={this.editProduct}
+            />
           )}
         </pre>
       </div>
