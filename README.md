@@ -1,68 +1,58 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+# Tecnologias utilizadas
 
-In the project directory, you can run:
+ - [React](https://reactjs.org/)
+ - [Axios](https://github.com/axios/axios)
 
-### `npm start`
+# Funcionalidades da aplicação
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+ - CRUD de produtos
+ - Filtro dos produtos pela sua descrição
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+# Como executar este projeto
 
-### `npm test`
+Para executar a aplicação será necessário seguir os passos abaixo:
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+ - Após da aplicação ser baixada, dentro do diretorio será necessário executar o comando "npm install" para baixar as dependencias do projeto
+ - Para executar em ambiente local utilizar o comando "npm start"
 
-### `npm run build`
+# Fluxo da aplicação
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+A seguir será mostrado a seguencia de passos para utilizar a aplicação.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+## Produtos
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Criando novos produtos
 
-### `npm run eject`
+ - Preencha o formulário com seus respectivos dados
+ - Pressione o Botão salvar
+ - O sistema irá atualizar a lista de produtos com o novo adicionado
+ 
+### Ver produto
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+ - Na listagem dos produtos, clicar na opção "Ver" do produto desejado
+ - O sistema irá carregar as informações do produto selecionado nos campos do formulário
+ - Para sair da visualização clicar no botão "Criar novo produto"
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Editar produto
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+ - Na listagem dos produtos, clicar na opção "Editar" do produto desejado
+ - O sistema irá carregar as informações do produto selecionado nos campos do formulário
+ - Edite que o desejar e clique no botão "Editar"
+ - O Sistema irá atualizar a listagem com os novos dados
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Remover produto
 
-## Learn More
+ - Na listagem dos produtos, clicar na opção "Remover" do produto desejado
+ - O produto será removido da listagem
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Alterar status do produto
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+ - Na listagem dos produtos, será mostrado o atual status do produto
+ - Para alterar o status, o usuário deve apenas clicar no status
+ - O sistema irá atualizar a listagem com o novo status do produto
 
-### Code Splitting
+### Buscar produto
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+ - Na listagem dos produtos, preencher o campo "Buscar por descrição"
+ - O sistema irá atualizar a listagem dos produtos por cada caracter digitado
