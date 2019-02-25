@@ -132,27 +132,35 @@ class App extends Component {
   render() {
     const { datas, term } = this.state;
     return (
-      <div className="App">
+      <div className="App container">
         <h2>{this.state.title}</h2>
-        <form ref="formProduct" className="formProduct">
-          <textarea type="text" ref="description" placeholder="Descrição do Produto" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
-          <input type="text" ref="short_description" placeholder="Breve Descrição" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
-          <input type="text" ref="code" placeholder="Código" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
-          <select ref="status" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} >
-            <option>Status do Produto</option>
-            <option value="enable">Ativado</option>
-            <option value="disable">Desativado</option>
-          </select>
-          <input type="number" step="0.01" ref="value" placeholder="Valor" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
-          <input type="number" ref="qty" placeholder="Quantidade" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
-          <button onClick={this.createOrUpdateProduct} className="formProductSubmit" disabled={this.state.editing == null ? 'disabled' : ''} >{this.state.button}</button>
-        </form>
+        <div className="row">
+          <div className="col-12">
+            <form ref="formProduct" className="formProduct">
+              <textarea type="text" ref="description" placeholder="Descrição do Produto" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
+              <input type="text" ref="short_description" placeholder="Breve Descrição" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
+              <input type="text" ref="code" placeholder="Código" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
+              <select ref="status" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} >
+                <option>Status do Produto</option>
+                <option value="enable">Ativado</option>
+                <option value="disable">Desativado</option>
+              </select>
+              <input type="number" step="0.01" ref="value" placeholder="Valor" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
+              <input type="number" ref="qty" placeholder="Quantidade" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
+              <button onClick={this.createOrUpdateProduct} className="formProductSubmit" disabled={this.state.editing == null ? 'disabled' : ''} >{this.state.button}</button>
+            </form>
+          </div>
+        </div>
 
-        <form ref="searchProduct" className="formProduct">
-          <input type="text" ref="term" placeholder="Buscar" className="formFieldProduct" onChange={this.searchHandler} />
-        </form>
+        <div className="row">
+          <div className="col-12">
+            <form ref="searchProduct" className="formProduct">
+              <input type="text" ref="term" placeholder="Buscar" className="formFieldProduct" onChange={this.searchHandler} />
+            </form>
+          </div>
+        </div>
 
-        <pre>
+        <div className="row">
           { 
             datas.filter(
               data => {
@@ -174,7 +182,7 @@ class App extends Component {
               />
             )
           }
-        </pre>
+        </div>
       </div>
     );
   }
