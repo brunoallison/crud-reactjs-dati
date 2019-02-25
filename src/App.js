@@ -164,6 +164,8 @@ class App extends Component {
                 key={data.id}
                 id={data.id}
                 short_description={data.short_description}
+                description={data.description}
+                value={data.value}
                 status={data.status}
                 showProduct={this.showProduct}
                 removeProduct={this.removeProduct}
