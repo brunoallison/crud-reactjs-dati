@@ -43,8 +43,6 @@ class App extends Component {
   createOrUpdateProduct(e) {
     e.preventDefault();
 
-    this.setState({ fields: {} });
-
     if(!this.handleValidation()){
       return false;
     }
@@ -106,6 +104,7 @@ class App extends Component {
     this.searchAll();
     this.refs.formProduct.reset();
     this.refs.description.focus();
+    this.setState({ fields:{}, errors:{} });
   }
 
   async editProduct(id) {
@@ -165,7 +164,7 @@ class App extends Component {
   handleChange(field, e) {
     let fields = this.state.fields;
     fields[field] = e.target.value;
-    this.setState({ fields, errors: {} });
+    this.setState({ fields });
   }
 
   handleValidation() {
@@ -215,9 +214,23 @@ class App extends Component {
       errors["value"] = "Valor não pode ser vazio";
     }
 
+    if(typeof fields["value"] !== "undefined"){
+      if (fields["value"] < 0) {
+        formIsValid = false;
+        errors["value"] = "Valor deve ser positivo";
+      }
+    }
+
     if (!fields["qty"]) {
       formIsValid = false;
       errors["qty"] = "Quantidade não pode ser vazio";
+    }
+
+    if(typeof fields["qty"] !== "undefined"){
+      if (fields["qty"] < 0) {
+        formIsValid = false;
+        errors["qty"] = "Quantidade deve ser positiva";
+      }
     }
 
     this.setState({ errors: errors });
