@@ -8,7 +8,7 @@ class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: 'CRUD de Produtos Dati.',
+      title: 'CRUD de Produtos dati.',
       term: '',
       editing: false,
       idEditing: '',
@@ -284,10 +284,14 @@ class Main extends Component {
       }
 
       if (typeof fields["value"] !== "undefined") {
-          if (fields["value"] < 0) {
+          if (parseFloat(fields["value"]) < 0) {
               formIsValid = false;
-              errors["value"] = "Valor deve ser positivo";
+              errors["value"] = "Valor deve ser maior ou igual a 0";
           }
+          if (parseFloat(fields["value"]) > 99999999.9) {
+            formIsValid = false;
+            errors["value"] = "Valor deve ser menor ou igual a 99999999.9";
+        }
       }
 
       if (!fields["qty"]) {
@@ -296,10 +300,14 @@ class Main extends Component {
       }
 
       if (typeof fields["qty"] !== "undefined") {
-          if (fields["qty"] < 0) {
+          if (parseFloat(fields["qty"]) < 0) {
               formIsValid = false;
-              errors["qty"] = "Quantidade deve ser positiva";
+              errors["qty"] = "Quantidade deve ser maior ou igual a 0";
           }
+          if (parseFloat(fields["qty"]) > 999999999) {
+            formIsValid = false;
+            errors["qty"] = "Quantidade deve ser menor ou igual a 999999999";
+        }
           if (!Number.isInteger(parseFloat(fields["qty"]))) {
               formIsValid = false;
               errors["qty"] = "Quantidade deve ser um número inteiro";
