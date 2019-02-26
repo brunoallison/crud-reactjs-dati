@@ -30,8 +30,8 @@ class Main extends Component {
   }
 
   async componentDidMount() {
-    this.refs.description.focus();
-    await this.searchAll();
+      this.refs.description.focus();
+      await this.searchAll();
   }
 
   async searchAll() {
@@ -46,11 +46,11 @@ class Main extends Component {
   }
 
   successMessage(message) {
-    Swal.fire(
-        message,
-        'Clique em ok para continuar!',
-        'success'
-    );
+      Swal.fire(
+          message,
+          'Clique em ok para continuar!',
+          'success'
+      );
   }
 
   errorMessage() {
@@ -79,7 +79,7 @@ class Main extends Component {
       };
 
       if (!this.state.editing) {
-        api.post('/products/', product)
+          api.post('/products/', product)
               .then(res => {
                   this.successMessage("Inserido com sucesso");
                   this.refreshContent();
@@ -88,7 +88,7 @@ class Main extends Component {
                   console.log(error);
               });
       } else {
-        api.put(`/products/${this.state.idEditing}`, product)
+          api.put(`/products/${this.state.idEditing}`, product)
               .then(res => {
                   this.successMessage("Editado com sucesso");
                   this.refreshContent();
@@ -138,7 +138,7 @@ class Main extends Component {
           cancelButtonText: 'Cancelar'
       }).then((result) => {
           if (result.value) {
-            api.delete(`/products/${id}`)
+              api.delete(`/products/${id}`)
                   .then(res => {
                       Swal.fire(
                           'Removido!',
@@ -152,13 +152,6 @@ class Main extends Component {
                   });
           }
       })
-  }
-
-  refreshContent() {
-    this.searchAll();
-    this.refs.formProduct.reset();
-    this.refs.description.focus();
-    this.setState({ fields:{}, errors:{} });
   }
 
   async editProduct(id) {
@@ -209,99 +202,114 @@ class Main extends Component {
           });;
   }
 
-  searchHandler(e) {
-    this.setState({ term: e.target.value })
+  setToCreate(e) {
+      e.preventDefault();
+
+      this.refs.formProduct.reset();
+
+      this.setState({
+          editing: false,
+          button: 'Salvar'
+      });
   }
 
-  setToCreate(e) {
-    e.preventDefault();
+  refreshContent() {
+      this.searchAll();
+      this.refs.formProduct.reset();
+      this.refs.description.focus();
+      this.setState({
+          fields: {},
+          errors: {}
+      });
+  }
 
-    this.refs.formProduct.reset();
-
-    this.setState({
-      editing: false,
-      button: 'Salvar'
-    });
+  searchHandler(e) {
+      this.setState({
+          term: e.target.value
+      })
   }
 
   handleChange(field, e) {
-    let fields = this.state.fields;
-    fields[field] = e.target.value;
-    this.setState({ fields });
+      let fields = this.state.fields;
+      fields[field] = e.target.value;
+      this.setState({
+          fields
+      });
   }
 
   handleValidation() {
-    let fields = this.state.fields;
-    let errors = {};
-    let formIsValid = true;
+      let fields = this.state.fields;
+      let errors = {};
+      let formIsValid = true;
 
-    //Description
-    if (!fields["description"]) {
-      formIsValid = false;
-      errors["description"] = "Descrição não pode ser vazia";
-    }
-
-    if(typeof fields["description"] !== "undefined"){
-      if (fields["description"].length > 150) {
-        formIsValid = false;
-        errors["short_description"] = "Descrição deve ter no máximo 150 caracteres";
+      if (!fields["description"]) {
+          formIsValid = false;
+          errors["description"] = "Descrição não pode ser vazia";
       }
-    }
 
-    if (!fields["short_description"]) {
-      formIsValid = false;
-      errors["short_description"] = "Breve descrição não pode ser vazia";
-    }
-
-    if(typeof fields["short_description"] !== "undefined"){
-      if (fields["short_description"].length > 30) {
-        formIsValid = false;
-        errors["short_description"] = "Breve descrição deve ter no máximo 30 caracteres";
+      if (typeof fields["description"] !== "undefined") {
+          if (fields["description"].length > 150) {
+              formIsValid = false;
+              errors["short_description"] = "Descrição deve ter no máximo 150 caracteres";
+          }
       }
-    }
 
-    if (!fields["code"]) {
-      formIsValid = false;
-      errors["code"] = "Código não pode ser vazio";
-    }
-
-    if(typeof fields["code"] !== "undefined"){
-      if (fields["code"].length > 10) {
-        formIsValid = false;
-        errors["code"] = "Código deve ter no máximo 10 caracteres";
+      if (!fields["short_description"]) {
+          formIsValid = false;
+          errors["short_description"] = "Breve descrição não pode ser vazia";
       }
-    }
 
-    if (!fields["value"]) {
-      formIsValid = false;
-      errors["value"] = "Valor não pode ser vazio";
-    }
-
-    if(typeof fields["value"] !== "undefined"){
-      if (fields["value"] < 0) {
-        formIsValid = false;
-        errors["value"] = "Valor deve ser positivo";
+      if (typeof fields["short_description"] !== "undefined") {
+          if (fields["short_description"].length > 30) {
+              formIsValid = false;
+              errors["short_description"] = "Breve descrição deve ter no máximo 30 caracteres";
+          }
       }
-    }
 
-    if (!fields["qty"]) {
-      formIsValid = false;
-      errors["qty"] = "Quantidade não pode ser vazio";
-    }
-
-    if(typeof fields["qty"] !== "undefined"){
-      if (fields["qty"] < 0) {
-        formIsValid = false;
-        errors["qty"] = "Quantidade deve ser positiva";
+      if (!fields["code"]) {
+          formIsValid = false;
+          errors["code"] = "Código não pode ser vazio";
       }
-      if (!Number.isInteger(parseFloat(fields["qty"]))) {
-        formIsValid = false;
-        errors["qty"] = "Quantidade deve ser um número inteiro";
-      }
-    }
 
-    this.setState({ errors: errors });
-    return formIsValid;
+      if (typeof fields["code"] !== "undefined") {
+          if (fields["code"].length > 10) {
+              formIsValid = false;
+              errors["code"] = "Código deve ter no máximo 10 caracteres";
+          }
+      }
+
+      if (!fields["value"]) {
+          formIsValid = false;
+          errors["value"] = "Valor não pode ser vazio";
+      }
+
+      if (typeof fields["value"] !== "undefined") {
+          if (fields["value"] < 0) {
+              formIsValid = false;
+              errors["value"] = "Valor deve ser positivo";
+          }
+      }
+
+      if (!fields["qty"]) {
+          formIsValid = false;
+          errors["qty"] = "Quantidade não pode ser vazio";
+      }
+
+      if (typeof fields["qty"] !== "undefined") {
+          if (fields["qty"] < 0) {
+              formIsValid = false;
+              errors["qty"] = "Quantidade deve ser positiva";
+          }
+          if (!Number.isInteger(parseFloat(fields["qty"]))) {
+              formIsValid = false;
+              errors["qty"] = "Quantidade deve ser um número inteiro";
+          }
+      }
+
+      this.setState({
+          errors: errors
+      });
+      return formIsValid;
   }
 
   render() {
