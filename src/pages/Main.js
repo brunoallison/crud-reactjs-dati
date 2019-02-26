@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ProductList from '../components/ProductList/ProductList';
-import axios from 'axios';
+import api from '../services/api';
 import '../assets/css/main.css';
 import Swal from 'sweetalert2'
 
@@ -35,7 +35,7 @@ class Main extends Component {
   }
 
   async searchAll() {
-      const products = await axios.get('http://18.228.14.48/api/products?cmd=list')
+      const products = await api.get('/products?cmd=list')
           .catch(function (error) {
               this.errorMessage();
               console.log(error);
@@ -79,7 +79,7 @@ class Main extends Component {
       };
 
       if (!this.state.editing) {
-          axios.post('http://18.228.14.48/api/products/', product)
+        api.post('/products/', product)
               .then(res => {
                   this.successMessage("Inserido com sucesso");
                   this.refreshContent();
@@ -88,7 +88,7 @@ class Main extends Component {
                   console.log(error);
               });
       } else {
-          axios.put(`http://18.228.14.48/api/products/${this.state.idEditing}`, product)
+        api.put(`/products/${this.state.idEditing}`, product)
               .then(res => {
                   this.successMessage("Editado com sucesso");
                   this.refreshContent();
@@ -106,7 +106,7 @@ class Main extends Component {
   }
 
   async showProduct(id) {
-      let product = await axios.get(`http://18.228.14.48/api/products?cmd=details&id=${id}`)
+      let product = await api.get(`/products?cmd=details&id=${id}`)
           .then(res => {
               this.refs.description.value = res.data.description;
               this.refs.short_description.value = res.data.short_description;
@@ -138,7 +138,7 @@ class Main extends Component {
           cancelButtonText: 'Cancelar'
       }).then((result) => {
           if (result.value) {
-              axios.delete(`http://18.228.14.48/api/products/${id}`)
+            api.delete(`/products/${id}`)
                   .then(res => {
                       Swal.fire(
                           'Removido!',
@@ -166,7 +166,7 @@ class Main extends Component {
           fields: {},
           errors: {}
       });
-      let product = await axios.get(`http://18.228.14.48/api/products?cmd=details&id=${id}`)
+      let product = await api.get(`/products?cmd=details&id=${id}`)
           .then(res => {
               this.refs.description.value = res.data.description;
               this.refs.short_description.value = res.data.short_description;
@@ -200,7 +200,7 @@ class Main extends Component {
       let product = {
           status
       };
-      axios.put(`http://18.228.14.48/api/products/${id}`, product)
+      api.put(`/products/${id}`, product)
           .then(res => {
               this.refreshContent();
           }).catch(function (error) {
