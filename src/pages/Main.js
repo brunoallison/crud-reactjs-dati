@@ -294,6 +294,10 @@ class Main extends Component {
         formIsValid = false;
         errors["qty"] = "Quantidade deve ser positiva";
       }
+      if (!Number.isInteger(parseFloat(fields["qty"]))) {
+        formIsValid = false;
+        errors["qty"] = "Quantidade deve ser um número inteiro";
+      }
     }
 
     this.setState({ errors: errors });
