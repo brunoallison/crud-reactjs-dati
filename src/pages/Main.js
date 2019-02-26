@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import ProductList from './components/ProductList';
+import ProductList from '../components/ProductList/ProductList';
 import axios from 'axios';
-import './App.css';
+import '../assets/css/main.css';
 
-class App extends Component {
+class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -172,7 +172,6 @@ class App extends Component {
     let errors = {};
     let formIsValid = true;
 
-    //Description
     if (!fields["description"]) {
       formIsValid = false;
       errors["description"] = "Descrição não pode ser vazia";
@@ -294,4 +293,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default Main;
