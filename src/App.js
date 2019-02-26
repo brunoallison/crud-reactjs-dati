@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ProductList from './components/ProductList';
 import axios from 'axios';
 import './App.css';
-import yup from 'yup';
+import * as yup from "yup";
 
 class App extends Component {
   constructor(props) {
@@ -13,7 +13,8 @@ class App extends Component {
       editing: false,
       idEditing: '',
       button: 'Salvar',
-      datas: []
+      datas: [],
+      descriptionValidate: ''
     };
 
     this.showProduct = this.showProduct.bind(this);
@@ -50,22 +51,20 @@ class App extends Component {
     };
 
     const schema = yup.object().shape({
-      description: yup.string(),
-      short_description: yup.string(),
-      code: yup.string(),
-      status: yup.string(),
-      value: yup.number(),
-      qty: yup.number(),
+      description: yup.string().required("Campo Descrição Obrigatório").max(150, "Descrição deve ter no máximo 150 caracteres"),
+      short_description: yup.string().required("Campo Breve Descrição Obrigatório").max(30,  "Breve descrição deve ter no máximo 30 caracteres"),
+      code: yup.string().required("Campo Código Obrigatório").max(10,  "Código deve ter no máximo 10 caracteres"),
+      status: yup.string().required("Selecione um status"),
+      value: yup.number("Campo Valor deve ser um inteiro").required("Campo Valor Obrigatório"),
+      qty: yup.number('dasd').required("Campo Quantidade Obrigatório"),
     });
+    
+    const result = schema.validate(product, {abortEarly: false})
+      .catch((result) => {
+        return result.inner;
+      });
 
-    schema.validate(product).catch(function(err) {
-      err.description; // 'ValidationError'
-      err.short_description; // => ['Deve ser maior que 18']
-      err.code; // => ['Deve ser maior que 18']
-      err.status; // => ['Deve ser maior que 18']
-      err.value; // => ['Deve ser maior que 18']
-      err.qty; // => ['Deve ser maior que 18']
-    });
+      console.log(Promise.race(result));
 
     if (!this.state.editing) {
       axios.post('http://18.228.14.48/api/products/', product)
@@ -169,16 +168,16 @@ class App extends Component {
       <div className="App">
         <h2>{this.state.title}</h2>
         <form ref="formProduct" className="formProduct">
-          <textarea type="text" ref="description" placeholder="Descrição do Produto" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
-          <input type="text" ref="short_description" placeholder="Breve Descrição" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
-          <input type="text" ref="code" placeholder="Código" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
+          {this.state.descriptionValidate == '' ? '' : this.state.descriptionValidate}
+          <textarea type="text" ref="description" placeholder="Descrição do Produto" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
+          <input type="text" ref="short_description" placeholder="Breve Descrição" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
+          <input type="text" ref="code" placeholder="Código" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
           <select ref="status" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} >
-            <option>Status do Produto</option>
             <option value="enable">Ativado</option>
             <option value="disable">Desativado</option>
           </select>
-          <input type="number" step="0.01" ref="value" placeholder="Valor" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
-          <input type="number" ref="qty" placeholder="Quantidade" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} />
+          <input type="number" step="0.01" ref="value" placeholder="Valor" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
+          <input type="number" ref="qty" placeholder="Quantidade" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
           <button onClick={this.state.editing == null ? this.setToCreate : this.createOrUpdateProduct } className="formProductSubmit" >{this.state.button}</button>
         </form>
 
