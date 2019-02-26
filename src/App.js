@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ProductList from './components/ProductList';
 import axios from 'axios';
 import './App.css';
+import yup from 'yup';
 
 class App extends Component {
   constructor(props) {
@@ -47,6 +48,24 @@ class App extends Component {
       value: this.refs.value.value,
       qty: this.refs.qty.value
     };
+
+    const schema = yup.object().shape({
+      description: yup.string(),
+      short_description: yup.string(),
+      code: yup.string(),
+      status: yup.string(),
+      value: yup.number(),
+      qty: yup.number(),
+    });
+
+    schema.validate(product).catch(function(err) {
+      err.description; // 'ValidationError'
+      err.short_description; // => ['Deve ser maior que 18']
+      err.code; // => ['Deve ser maior que 18']
+      err.status; // => ['Deve ser maior que 18']
+      err.value; // => ['Deve ser maior que 18']
+      err.qty; // => ['Deve ser maior que 18']
+    });
 
     if (!this.state.editing) {
       axios.post('http://18.228.14.48/api/products/', product)
@@ -145,6 +164,7 @@ class App extends Component {
 
   render() {
     const { datas, term } = this.state;
+
     return (
       <div className="App">
         <h2>{this.state.title}</h2>
