@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ProductList from './components/ProductList';
 import axios from 'axios';
 import './App.css';
-import * as yup from "yup";
 
 class App extends Component {
   constructor(props) {
@@ -14,7 +13,9 @@ class App extends Component {
       idEditing: '',
       button: 'Salvar',
       datas: [],
-      descriptionValidate: ''
+      descriptionValidate: '',
+      fields: {},
+      errors: {}
     };
 
     this.showProduct = this.showProduct.bind(this);
@@ -24,6 +25,7 @@ class App extends Component {
     this.searchHandler = this.searchHandler.bind(this);
     this.setToCreate = this.setToCreate.bind(this);
     this.createOrUpdateProduct = this.createOrUpdateProduct.bind(this);
+    this.handleValidation = this.handleValidation.bind(this);
   }
 
   async componentDidMount() {
@@ -41,6 +43,12 @@ class App extends Component {
   createOrUpdateProduct(e) {
     e.preventDefault();
 
+    this.setState({ fields: {} });
+
+    if(!this.handleValidation()){
+      return false;
+    }
+
     let product = {
       description: this.refs.description.value,
       short_description: this.refs.short_description.value,
@@ -49,22 +57,6 @@ class App extends Component {
       value: this.refs.value.value,
       qty: this.refs.qty.value
     };
-
-    const schema = yup.object().shape({
-      description: yup.string().required("Campo Descrição Obrigatório").max(150, "Descrição deve ter no máximo 150 caracteres"),
-      short_description: yup.string().required("Campo Breve Descrição Obrigatório").max(30,  "Breve descrição deve ter no máximo 30 caracteres"),
-      code: yup.string().required("Campo Código Obrigatório").max(10,  "Código deve ter no máximo 10 caracteres"),
-      status: yup.string().required("Selecione um status"),
-      value: yup.number("Campo Valor deve ser um inteiro").required("Campo Valor Obrigatório"),
-      qty: yup.number('dasd').required("Campo Quantidade Obrigatório"),
-    });
-    
-    const result = schema.validate(product, {abortEarly: false})
-      .catch((result) => {
-        return result.inner;
-      });
-
-      console.log(Promise.race(result));
 
     if (!this.state.editing) {
       axios.post('http://18.228.14.48/api/products/', product)
@@ -117,6 +109,7 @@ class App extends Component {
   }
 
   async editProduct(id) {
+    this.setState({ fields: {}, errors: {} });
     let product = await axios.get(`http://18.228.14.48/api/products?cmd=details&id=${id}`)
       .then(res => {
         this.refs.description.value = res.data.description;
@@ -129,7 +122,15 @@ class App extends Component {
         this.setState({
           editing: true,
           idEditing: res.data.id,
-          button: 'Editar'
+          button: 'Editar',
+          fields: {
+            description: res.data.description,
+            short_description: res.data.short_description,
+            code: res.data.code,
+            status: res.data.status,
+            value: res.data.value,
+            qty: res.data.qty
+          }
         });
 
       });
@@ -161,6 +162,68 @@ class App extends Component {
     });
   }
 
+  handleChange(field, e) {
+    let fields = this.state.fields;
+    fields[field] = e.target.value;
+    this.setState({ fields, errors: {} });
+  }
+
+  handleValidation() {
+    let fields = this.state.fields;
+    let errors = {};
+    let formIsValid = true;
+
+    //Description
+    if (!fields["description"]) {
+      formIsValid = false;
+      errors["description"] = "Descrição não pode ser vazia";
+    }
+
+    if(typeof fields["description"] !== "undefined"){
+      if (fields["description"].length > 150) {
+        formIsValid = false;
+        errors["short_description"] = "Descrição deve ter no máximo 150 caracteres";
+      }
+    }
+
+    if (!fields["short_description"]) {
+      formIsValid = false;
+      errors["short_description"] = "Breve descrição não pode ser vazia";
+    }
+
+    if(typeof fields["short_description"] !== "undefined"){
+      if (fields["short_description"].length > 30) {
+        formIsValid = false;
+        errors["short_description"] = "Breve descrição deve ter no máximo 30 caracteres";
+      }
+    }
+
+    if (!fields["code"]) {
+      formIsValid = false;
+      errors["code"] = "Código não pode ser vazio";
+    }
+
+    if(typeof fields["code"] !== "undefined"){
+      if (fields["code"].length > 10) {
+        formIsValid = false;
+        errors["code"] = "Código deve ter no máximo 10 caracteres";
+      }
+    }
+
+    if (!fields["value"]) {
+      formIsValid = false;
+      errors["value"] = "Valor não pode ser vazio";
+    }
+
+    if (!fields["qty"]) {
+      formIsValid = false;
+      errors["qty"] = "Quantidade não pode ser vazio";
+    }
+
+    this.setState({ errors: errors });
+    return formIsValid;
+  }
+
   render() {
     const { datas, term } = this.state;
 
@@ -169,15 +232,20 @@ class App extends Component {
         <h2>{this.state.title}</h2>
         <form ref="formProduct" className="formProduct">
           {this.state.descriptionValidate == '' ? '' : this.state.descriptionValidate}
-          <textarea type="text" ref="description" placeholder="Descrição do Produto" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
-          <input type="text" ref="short_description" placeholder="Breve Descrição" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
-          <input type="text" ref="code" placeholder="Código" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
+          <textarea type="text" ref="description" placeholder="Descrição do Produto" onChange={this.handleChange.bind(this, "description")} className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
+          <span style={{color: "red"}}>{this.state.errors["description"]}</span>
+          <input type="text" ref="short_description" placeholder="Breve Descrição" onChange={this.handleChange.bind(this, "short_description")} className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
+          <span style={{color: "red"}}>{this.state.errors["short_description"]}</span>
+          <input type="text" ref="code" placeholder="Código" onChange={this.handleChange.bind(this, "code")} className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
+          <span style={{color: "red"}}>{this.state.errors["code"]}</span>
           <select ref="status" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} >
             <option value="enable">Ativado</option>
             <option value="disable">Desativado</option>
           </select>
-          <input type="number" step="0.01" ref="value" placeholder="Valor" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
-          <input type="number" ref="qty" placeholder="Quantidade" className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
+          <input type="number" step="0.01" ref="value" placeholder="Valor" onChange={this.handleChange.bind(this, "value")} className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
+          <span style={{color: "red"}}>{this.state.errors["value"]}</span>
+          <input type="number" ref="qty" placeholder="Quantidade" onChange={this.handleChange.bind(this, "qty")} className="formFieldProduct" disabled={this.state.editing == null ? 'disabled' : ''} required />
+          <span style={{color: "red"}}>{this.state.errors["qty"]}</span>
           <button onClick={this.state.editing == null ? this.setToCreate : this.createOrUpdateProduct } className="formProductSubmit" >{this.state.button}</button>
         </form>
 
