@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ProductList from '../components/ProductList/ProductList';
 import axios from 'axios';
 import '../assets/css/main.css';
+import Swal from 'sweetalert2'
 
 class Main extends Component {
   constructor(props) {
@@ -34,70 +35,123 @@ class Main extends Component {
   }
 
   async searchAll() {
-    const products = await axios.get('http://18.228.14.48/api/products?cmd=list');
-    this.setState({
-      datas: products.data
-    });
+      const products = await axios.get('http://18.228.14.48/api/products?cmd=list')
+          .catch(function (error) {
+              this.errorMessage();
+              console.log(error);
+          });
+      this.setState({
+          datas: products.data
+      });
+  }
+
+  successMessage(message) {
+    Swal.fire(
+        message,
+        'Clique em ok para continuar!',
+        'success'
+    );
+  }
+
+  errorMessage() {
+      Swal.fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'Alguma coisa está errado!',
+          footer: '<a href>Porque isso acontece?</a>'
+      })
   }
 
   createOrUpdateProduct(e) {
-    e.preventDefault();
+      e.preventDefault();
 
-    if(!this.handleValidation()){
-      return false;
-    }
+      if (!this.handleValidation()) {
+          return false;
+      }
 
-    let product = {
-      description: this.refs.description.value,
-      short_description: this.refs.short_description.value,
-      code: this.refs.code.value,
-      status: this.refs.status.value,
-      value: this.refs.value.value,
-      qty: this.refs.qty.value
-    };
+      let product = {
+          description: this.refs.description.value,
+          short_description: this.refs.short_description.value,
+          code: this.refs.code.value,
+          status: this.refs.status.value,
+          value: this.refs.value.value,
+          qty: this.refs.qty.value
+      };
 
-    if (!this.state.editing) {
-      axios.post('http://18.228.14.48/api/products/', product)
-        .then(res => {
-          this.refreshContent();
-        });
-    } else {
-      axios.put(`http://18.228.14.48/api/products/${this.state.idEditing}`, product)
-        .then(res => {
-          this.refreshContent();
+      if (!this.state.editing) {
+          axios.post('http://18.228.14.48/api/products/', product)
+              .then(res => {
+                  this.successMessage("Inserido com sucesso");
+                  this.refreshContent();
+              }).catch(function (error) {
+                  this.errorMessage();
+                  console.log(error);
+              });
+      } else {
+          axios.put(`http://18.228.14.48/api/products/${this.state.idEditing}`, product)
+              .then(res => {
+                  this.successMessage("Editado com sucesso");
+                  this.refreshContent();
 
-          this.setState({
-            editing: false,
-            idEditing: '',
-            button: 'Salvar'
-          });
-        });
-    }
+                  this.setState({
+                      editing: false,
+                      idEditing: '',
+                      button: 'Salvar'
+                  });
+              }).catch(function (error) {
+                  this.errorMessage();
+                  console.log(error);
+              });
+      }
   }
 
   async showProduct(id) {
-    let product = await axios.get(`http://18.228.14.48/api/products?cmd=details&id=${id}`)
-      .then(res => {
-        this.refs.description.value = res.data.description;
-        this.refs.short_description.value = res.data.short_description;
-        this.refs.code.value = res.data.code;
-        this.refs.status.value = res.data.status;
-        this.refs.value.value = res.data.value;
-        this.refs.qty.value = res.data.qty;
+      let product = await axios.get(`http://18.228.14.48/api/products?cmd=details&id=${id}`)
+          .then(res => {
+              this.refs.description.value = res.data.description;
+              this.refs.short_description.value = res.data.short_description;
+              this.refs.code.value = res.data.code;
+              this.refs.status.value = res.data.status;
+              this.refs.value.value = res.data.value;
+              this.refs.qty.value = res.data.qty;
 
-        this.setState({
-          editing: null,
-          button: 'Criar novo produto'
-        });
+              this.setState({
+                  editing: null,
+                  button: 'Criar novo produto'
+              });
 
-      });
+          }).catch(function (error) {
+              this.errorMessage();
+              console.log(error);
+          });
   }
 
   removeProduct(id) {
-    axios.delete(`http://18.228.14.48/api/products/${id}`)
-      .then(res => {
-        this.refreshContent();
-      });
+      Swal.fire({
+          title: 'Você tem certeza que deseja remover?',
+          text: "Não será possivel reverter!",
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Deletar!',
+          cancelButtonText: 'Cancelar'
+      }).then((result) => {
+          if (result.value) {
+              axios.delete(`http://18.228.14.48/api/products/${id}`)
+                  .then(res => {
+                      Swal.fire(
+                          'Removido!',
+                          'Produto removido.',
+                          'success'
+                      )
+                      this.refreshContent();
+                  }).catch(function (error) {
+                      this.errorMessage();
+                      console.log(error);
+                  });
+          }
+      })
   }
 
   refreshContent() {
@@ -108,42 +162,51 @@ class Main extends Component {
   }
 
   async editProduct(id) {
-    this.setState({ fields: {}, errors: {} });
-    let product = await axios.get(`http://18.228.14.48/api/products?cmd=details&id=${id}`)
-      .then(res => {
-        this.refs.description.value = res.data.description;
-        this.refs.short_description.value = res.data.short_description;
-        this.refs.code.value = res.data.code;
-        this.refs.status.value = res.data.status;
-        this.refs.value.value = res.data.value;
-        this.refs.qty.value = res.data.qty;
-
-        this.setState({
-          editing: true,
-          idEditing: res.data.id,
-          button: 'Editar',
-          fields: {
-            description: res.data.description,
-            short_description: res.data.short_description,
-            code: res.data.code,
-            status: res.data.status,
-            value: res.data.value,
-            qty: res.data.qty
-          }
-        });
-
+      this.setState({
+          fields: {},
+          errors: {}
       });
+      let product = await axios.get(`http://18.228.14.48/api/products?cmd=details&id=${id}`)
+          .then(res => {
+              this.refs.description.value = res.data.description;
+              this.refs.short_description.value = res.data.short_description;
+              this.refs.code.value = res.data.code;
+              this.refs.status.value = res.data.status;
+              this.refs.value.value = res.data.value;
+              this.refs.qty.value = res.data.qty;
+
+              this.setState({
+                  editing: true,
+                  idEditing: res.data.id,
+                  button: 'Editar',
+                  fields: {
+                      description: res.data.description,
+                      short_description: res.data.short_description,
+                      code: res.data.code,
+                      status: res.data.status,
+                      value: res.data.value,
+                      qty: res.data.qty
+                  }
+              });
+
+          }).catch(function (error) {
+              this.errorMessage();
+              console.log(error);
+          });
   }
 
   changeStatus(id, currentStatus) {
-    const status = currentStatus == 'enable' ? 'disable' : 'enable';
-    let product = {
-      status
-    };
-    axios.put(`http://18.228.14.48/api/products/${id}`, product)
-      .then(res => {
-        this.refreshContent();
-      });
+      const status = currentStatus == 'enable' ? 'disable' : 'enable';
+      let product = {
+          status
+      };
+      axios.put(`http://18.228.14.48/api/products/${id}`, product)
+          .then(res => {
+              this.refreshContent();
+          }).catch(function (error) {
+              this.errorMessage();
+              console.log(error);
+          });;
   }
 
   searchHandler(e) {
@@ -172,6 +235,7 @@ class Main extends Component {
     let errors = {};
     let formIsValid = true;
 
+    //Description
     if (!fields["description"]) {
       formIsValid = false;
       errors["description"] = "Descrição não pode ser vazia";
