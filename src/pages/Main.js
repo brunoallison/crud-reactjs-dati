@@ -8,7 +8,7 @@ class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: 'CRUD de Produtos dati.',
+      title: 'CRUD de Produtos Dati.',
       term: '',
       editing: false,
       idEditing: '',
