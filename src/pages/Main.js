@@ -128,7 +128,7 @@ class Main extends Component {
 
   removeProduct(id) {
       Swal.fire({
-          title: 'Você tem certeza que deseja remover?',
+          title: 'Você tem certeza que deseja remover este produto?',
           text: "Não será possivel reverter!",
           type: 'warning',
           showCancelButton: true,

@@ -3,6 +3,7 @@
 
  - [React](https://reactjs.org/)
  - [Axios](https://github.com/axios/axios)
+ - [SweetAlert2](https://sweetalert2.github.io/)
 
 # Funcionalidades da aplicação
 
@@ -26,7 +27,8 @@ A seguir será mostrado a seguencia de passos para utilizar a aplicação.
 
  - Preencha o formulário com seus respectivos dados
  - Pressione o Botão salvar
- - O sistema irá atualizar a lista de produtos com o novo adicionado
+ - O sistema irá abrir um modal com a mensagem "Inserido com sucesso" e atualizará a lista de produtos
+ - Clique em OK ou clique fora do modal para fecha-lo
  
 ### Ver produto
 
@@ -39,12 +41,16 @@ A seguir será mostrado a seguencia de passos para utilizar a aplicação.
  - Na listagem dos produtos, clicar na opção "Editar" do produto desejado
  - O sistema irá carregar as informações do produto selecionado nos campos do formulário
  - Edite que o desejar e clique no botão "Editar"
- - O Sistema irá atualizar a listagem com os novos dados
+ - O sistema irá abrir um modal com a mensagem "Editado com sucesso" e atualizará a lista de produtos
+ - Clique em OK ou clique fora do modal para fecha-lo
 
 ### Remover produto
 
  - Na listagem dos produtos, clicar na opção "Remover" do produto desejado
- - O produto será removido da listagem
+ - O sistema abrirá um modal com a mensagem "Você tem certeza que deseja remover este produto?"
+ - Clique no botão "Deletar!" para remover o produto
+ - Caso não quiser remover o produto, clique no botão "Cancelar"
+ - O sistema irá carregar a listagem de produtos
 
 ### Alterar status do produto
 
